@@ -1,6 +1,7 @@
 .vs/
 *.vcxproj
 *.vcxproj.*
+cmake-build-debug/
 
 # Prerequisites
 *.d
