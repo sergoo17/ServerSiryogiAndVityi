@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "Socket.h"
 
 #ifdef _WIN32
@@ -143,12 +142,11 @@ void Socket::finish() {
     closeSocket();
 }
 
-void Socket::listener() {
+[[noreturn]] Socket::listener(const std::function<const char*(const char*)>& callback) {
     while (true) {
         clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
         if (clientSocket < 0) {
             std::cerr << "Error accepting client connection" << std::endl;
-            return 1;
         }
     }
 }

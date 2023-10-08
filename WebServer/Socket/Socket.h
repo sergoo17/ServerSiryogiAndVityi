@@ -30,6 +30,8 @@ private:
 };
 
 #else
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 class Socket {
 public:
@@ -48,7 +50,7 @@ private:
     void setInfo(const char *host, unsigned short port);
     void closeSocket();
     void finish();
-    void listener();
+    void listener(const std::function<const char*(const char*)>& callback);
 };
 
 #endif
