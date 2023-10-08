@@ -8,7 +8,7 @@ public:
     App(const char* host, unsigned short port);
     Socket *socket;
     void run() const;
-    static const char * newHttpRequest(const char * request);
+    static std::string newHttpRequest(const char * request);
 };
 
 #endif //APP_H

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Socket.h"
+#include <functional>
 
 #ifdef _WIN32
 
@@ -66,7 +67,7 @@ void Socket::finish() {
     WSACleanup();
 }
 
-[[noreturn]] void Socket::listener(const std::function<const char*(const char*)>& callback) {
+[[noreturn]] void Socket::listener(const std::function<std::string(const char*)>& callback) {
     while (true) {
         int sizeofAddr = sizeof(addr);
         SOCKET clientSocket = accept(serverSocket, (SOCKADDR *) &addr, &sizeofAddr);
@@ -79,8 +80,8 @@ void Socket::finish() {
                 std::cout << "------ Failed to receive bytes from client socket connection ------\n";
                 continue;
             }
-            const char *sendBuffer = callback(buffer);
-            send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
+            std::string sendBuffer = callback(buffer);
+            send(clientSocket, sendBuffer.c_str(), (int)sendBuffer.size(), 0);
             closesocket(clientSocket);
         } else {
             std::cout << "------ Error client connected ------\n\n";

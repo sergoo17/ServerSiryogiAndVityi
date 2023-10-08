@@ -2,32 +2,23 @@
 #define HTTP_REQUEST_H
 
 #include <string>
+#include <iostream>
+#include <map>
 
 
 class HttpRequest {
 public:
-    std::string _request;
-    HttpRequest(const char* request) {
-        this->_request = request;
-    }
-    void parseRequest() {
-        size_t posRequest = _request.find("\r\n");
-        if (posRequest == std::string::npos) {
-            throw; // Invalid request
-        }
-        std::string RequestLine = _request.substr(0, posRequest);
-        std::string HeadersLines = _request.substr(posRequest + 1);
+    std::string method;
+    std::string path;
+    std::string httpProtocol;
+    std::map<std::string, std::string> headers;
+    std::string escapeSymbols = "\r\n";
 
-        parseRequestLine(RequestLine);
-        parseHeadersLines(HeadersLines);
-    }
-
-    void parseRequestLine(std::string request) {
-        request.find(' ');
-    }
-    void parseHeadersLines(std::string request) {
-
-    }
+    explicit HttpRequest(const char* request);
+private:
+    void parseRequest(const std::string& request);
+    void parseRequestLine(const std::string& request);
+    void parseHeadersLines(const std::string& request);
 };
 
 

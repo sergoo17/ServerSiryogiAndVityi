@@ -1,10 +1,12 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+#include <functional>
+#include <string>
+
 #ifdef _WIN32
 
 #include <winsock2.h>
-#include <functional>
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -15,7 +17,7 @@ public:
     Socket(const char *host, unsigned short port);
     ~Socket();
 
-    [[noreturn]] void listener(const std::function<const char*(const char*)>& callback);
+    [[noreturn]] void listener(const std::function<std::string(const char*)>& callback);
 private:
     SOCKET serverSocket{};
     SOCKADDR_IN addr{};
