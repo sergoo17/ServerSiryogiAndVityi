@@ -92,6 +92,7 @@ void Socket::finish() {
 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 
 Socket::Socket(const char *host, unsigned short port) {
     this->host = host;
@@ -144,7 +145,7 @@ void Socket::finish() {
 
 [[noreturn]] Socket::listener(const std::function<const char*(const char*)>& callback) {
     while (true) {
-        clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
+        int clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
         if (clientSocket < 0) {
             std::cerr << "Error accepting client connection" << std::endl;
         }

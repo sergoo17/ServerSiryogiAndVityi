@@ -32,6 +32,7 @@ private:
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 
 class Socket {
 public:
@@ -39,6 +40,7 @@ public:
     unsigned short port;
     Socket(const char *host, unsigned short port);
     ~Socket();
+    void listener(const std::function<const char*(const char*)>& callback);
 private:
     int serverSocket;
     struct sockaddr_in serverAddr, clientAddr;
@@ -50,7 +52,6 @@ private:
     void setInfo(const char *host, unsigned short port);
     void closeSocket();
     void finish();
-    void listener(const std::function<const char*(const char*)>& callback);
 };
 
 #endif
