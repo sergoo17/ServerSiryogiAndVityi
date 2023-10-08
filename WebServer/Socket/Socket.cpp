@@ -1,8 +1,9 @@
 #include <iostream>
 
+#include "Socket.h"
+
 #ifdef _WIN32
 
-#include "Socket.h"
 #include <winsock2.h>
 #include "windows.h"
 
@@ -111,9 +112,9 @@ void Socket::init() {
 }
 
 void Socket::setInfo(const char *hostname, unsigned short numPort) {
-    addr.sin_addr.s_addr = inet_addr(hostname);
-    addr.sin_port = htons(numPort);
-    addr.sin_family = AF_INET;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(numPort);
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
 }
 
 void Socket::createSocket() {
@@ -121,7 +122,7 @@ void Socket::createSocket() {
 }
 
 void Socket::bindSocket() {
-    int result = bind(serverSocket, (SOCKADDR*)&addr, sizeAddr);
+    int result = bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
     if (result == 0) {
         throw std::logic_error("Socket binding failed");
     }
@@ -144,8 +145,11 @@ void Socket::finish() {
 
 void Socket::listener() {
     while (true) {
-        int clientSocket = accept(serverSocket, (struct sockaddr*)&addr, &sizeAddr);
-
+        clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
+        if (clientSocket < 0) {
+            std::cerr << "Error accepting client connection" << std::endl;
+            return 1;
+        }
     }
 }
 

@@ -38,9 +38,9 @@ public:
     Socket(const char *host, unsigned short port);
     ~Socket();
 private:
-    SOCKET serverSocket{};
-    SOCKADDR_IN addr{};
-    int sizeAddr = sizeof(addr);
+    int serverSocket;
+    struct sockaddr_in serverAddr, clientAddr;
+    socklen_t clientAddrLen = sizeof(clientAddr);
     void init();
     void createSocket();
     void bindSocket();
