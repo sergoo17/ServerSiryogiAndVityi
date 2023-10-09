@@ -5,6 +5,7 @@
 #ifdef _WIN32
 
 #include <winsock2.h>
+#include <fstream>
 #include "windows.h"
 
 Socket::Socket(const char *host, unsigned short port) {
@@ -76,7 +77,7 @@ void Socket::finish() {
     WSACleanup();
 }
 
-[[noreturn]] void Socket::listener(const std::function<std::string(const char*)>& callback) const {
+void Socket::listener(const std::function<std::string(const char*)>& callback) const {
     while (true) {
         sockaddr_in clientAddr{};
         int clientAddrSize = sizeof(clientAddr);
@@ -88,6 +89,7 @@ void Socket::finish() {
         } else {
             std::cout << "Client connected from IP address: " << clientIP << std::endl;
         }
+
         if (clientSocket != 0) {
             const int BUFFER_SIZE = 2048;
             char buffer[BUFFER_SIZE] = {0};

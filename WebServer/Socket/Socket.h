@@ -18,7 +18,7 @@ public:
     Socket(const char *host, unsigned short port);
     ~Socket();
 
-    [[noreturn]] void listener(const std::function<std::string(const char*)>& callback) const;
+    void listener(const std::function<std::string(const char*)>& callback) const;
 private:
     SOCKET serverSocket{};
     ADDRINFO hints{};

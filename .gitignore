@@ -2,6 +2,7 @@
 *.vcxproj
 *.vcxproj.*
 cmake-build-debug/
+dist/
 .idea/
 
 # Prerequisites

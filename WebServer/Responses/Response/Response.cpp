@@ -1,28 +1,28 @@
-#include "HttpResponse.h"
-#include "../HttpStatusCodes/HttpStatusCodes.h"
+#include "Response.h"
+#include "../../HttpStatusCodes/HttpStatusCodes.h"
 
-namespace HttpResponse {
+namespace Response {
     HttpVersion defaultHttpProtocol = HttpVersion::HTTP_1_1;
     HttpStatus defaultStatusCode = HttpStatus::OK;
 }
 
-std::string HttpResponse::build(const char* content, HttpStatus statusCode, HttpVersion httpVersion) {
+std::string Response::build(const std::string& content, HttpStatus statusCode, HttpVersion httpVersion) {
     return _build(content, statusCode, httpVersion);
 }
 
-std::string HttpResponse::build(const char* content, HttpVersion httpVersion) {
+std::string Response::build(const std::string& content, HttpVersion httpVersion) {
     return _build(content, defaultStatusCode, httpVersion);
 }
 
-std::string HttpResponse::build(const char* content,  HttpStatus statusCode) {
+std::string Response::build(const std::string& content,  HttpStatus statusCode) {
     return _build(content, statusCode, defaultHttpProtocol);
 }
 
-std::string HttpResponse::build(const char* content) {
+std::string Response::build(const std::string& content) {
     return _build(content, defaultStatusCode, defaultHttpProtocol);
 }
 
-std::string HttpResponse::_build(const char* content, HttpStatus statusCode, HttpVersion httpVersion) {
+std::string Response::_build(const std::string& content, HttpStatus statusCode, HttpVersion httpVersion) {
     std::string response;
     std::string httpProtocol = getStringHttpVersions(httpVersion);
     std::string statusDetail = HttpStatusCodes::reasonPhrase(statusCode);
