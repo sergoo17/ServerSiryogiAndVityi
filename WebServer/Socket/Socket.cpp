@@ -20,21 +20,29 @@ Socket::~Socket() {
 
 void Socket::init() {
     WSADATA wsaData;
-    WORD DLLVersion = MAKEWORD(2, 1);
+    WORD DLLVersion = MAKEWORD(2, 2);
     int result = WSAStartup(DLLVersion, &wsaData);
     if(result != 0) {
         throw std::logic_error("WSAStartup not init");
     }
-    setInfo(host, port);
+    setInfo();
     createSocket();
     bindSocket();
     listenSocket();
 }
 
-void Socket::setInfo(const char *hostname, unsigned short numPort) {
-    addr.sin_addr.s_addr = inet_addr(hostname);
-    addr.sin_port = htons(numPort);
-    addr.sin_family = AF_INET;
+void Socket::setInfo() {
+    ZeroMemory(&hints, sizeof(hints));
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_protocol = IPPROTO_TCP;
+    hints.ai_flags = AI_PASSIVE;
+
+    int result = getaddrinfo(host, std::to_string(port).c_str(), &hints, &addrResult);
+    if (result != 0) {
+        finish();
+        throw std::logic_error("getaddrinfo failed");
+    }
 }
 
 void Socket::createSocket() {
@@ -45,7 +53,7 @@ void Socket::createSocket() {
 }
 
 void Socket::bindSocket() {
-    int result = bind(serverSocket, (SOCKADDR*)&addr, sizeof(addr));
+    int result = bind(serverSocket, addrResult->ai_addr, (int)addrResult->ai_addrlen);
     if (result < 0) {
         throw std::logic_error("Socket binding failed");
     }
@@ -60,6 +68,7 @@ void Socket::listenSocket() const {
 
 void Socket::closeSocket() const {
     closesocket(serverSocket);
+    freeaddrinfo(addrResult);
 }
 
 void Socket::finish() {
@@ -67,11 +76,18 @@ void Socket::finish() {
     WSACleanup();
 }
 
-[[noreturn]] void Socket::listener(const std::function<std::string(const char*)>& callback) {
+[[noreturn]] void Socket::listener(const std::function<std::string(const char*)>& callback) const {
     while (true) {
-        int sizeofAddr = sizeof(addr);
-        SOCKET clientSocket = accept(serverSocket, (SOCKADDR *) &addr, &sizeofAddr);
+        sockaddr_in clientAddr{};
+        int clientAddrSize = sizeof(clientAddr);
+        SOCKET clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrSize);
 
+        char clientIP[INET_ADDRSTRLEN];
+        if (inet_ntop(AF_INET, &clientAddr.sin_addr, clientIP, INET_ADDRSTRLEN) == nullptr) {
+            std::cerr << "inet_ntop failed." << std::endl;
+        } else {
+            std::cout << "Client connected from IP address: " << clientIP << std::endl;
+        }
         if (clientSocket != 0) {
             const int BUFFER_SIZE = 2048;
             char buffer[BUFFER_SIZE] = {0};

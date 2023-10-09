@@ -7,6 +7,7 @@
 #ifdef _WIN32
 
 #include <winsock2.h>
+#include <ws2tcpip.h>
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -17,16 +18,16 @@ public:
     Socket(const char *host, unsigned short port);
     ~Socket();
 
-    [[noreturn]] void listener(const std::function<std::string(const char*)>& callback);
+    [[noreturn]] void listener(const std::function<std::string(const char*)>& callback) const;
 private:
     SOCKET serverSocket{};
-    SOCKADDR_IN addr{};
-    int sizeAddr = sizeof(addr);
+    ADDRINFO hints{};
+    ADDRINFO *addrResult{};
     void init();
     void createSocket() ;
     void bindSocket() ;
     void listenSocket() const ;
-    void setInfo(const char *host, unsigned short port) ;
+    void setInfo();
     void closeSocket() const ;
     void finish();
 };
