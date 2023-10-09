@@ -9,9 +9,10 @@ App::App(const char* host, unsigned short port) {
 
 std::string App::newHttpRequest(const char *request) {
     HttpRequest httpRequest(request);
-    if (httpRequest.path == "/" and httpRequest.method == "GET") {
-        HttpResponse response("", HttpStatus::MethodNotAllowed);
-        return response.buildResponse("1");
+    if (httpRequest.path == "/" && httpRequest.method == "GET") {
+        return HttpResponse::build("sjhjfsdf", HttpStatus::MethodNotAllowed);
+    } else if (httpRequest.path == "/about" && httpRequest.method == "GET") {
+        return HttpResponse::build("its me", HttpStatus::MethodNotAllowed);
     }
     return request;
 }

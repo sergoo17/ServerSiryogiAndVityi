@@ -5,19 +5,15 @@
 #include "../Enums/HttpStatus.h"
 #include "../Enums/HttpVersions.h"
 
-class HttpResponse {
-public:
-    HttpResponse(const char* content, HttpMethods method, HttpStatus statusCode, HttpVersion httpProtocol);
-    HttpResponse(const char* content, HttpMethods method, HttpVersion httpProtocol);
-    HttpResponse(const char* content, HttpMethods method, HttpStatus statusCode);
-    HttpResponse(const char* content, HttpMethods method);
-    HttpResponse(const char* content, HttpStatus statusCode);
-    explicit HttpResponse(const char* content);
-    std::string buildResponse(const char* content);
-private:
-    HttpVersion _httpProtocol = HttpVersion::HTTP_1_1;
-    HttpMethods _method = HttpMethods::GET;
-    HttpStatus _statusCode = HttpStatus::OK;
-};
+namespace HttpResponse {
+    extern HttpVersion defaultHttpProtocol;
+    extern HttpStatus defaultStatusCode;
+
+    std::string build(const char* content, HttpStatus statusCode, HttpVersion httpProtocol);
+    std::string build(const char* content, HttpVersion httpProtocol);
+    std::string build(const char* content, HttpStatus statusCode);
+    std::string build(const char* content);
+    std::string _build(const char* content, HttpStatus statusCode, HttpVersion httpProtocol);
+}
 
 #endif //HTTP_RESPONSE_H
