@@ -9,7 +9,7 @@ std::string HTMLResponse::build(const std::string& htmlFile, HttpStatus statusCo
 }
 
 std::string HTMLResponse::build(const std::string& htmlFile) {
-    std::string content = getFile(htmlFile);
+    std::string content = getFile("./templates/" + htmlFile);
     return Response::build(content);
 }
 

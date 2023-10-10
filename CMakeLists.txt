@@ -39,6 +39,8 @@ add_executable(
         WebServer/Responses/StaticResponse/StaticResponse.h
         WebServer/Responses/HTMLResponse/HTMLResponse.cpp
         WebServer/Responses/HTMLResponse/HTMLResponse.h
+        WebServer/Router/Router.cpp
+        WebServer/Router/Router.h
 )
 
 if(WIN32)

@@ -10,14 +10,14 @@ App::App(const char* host, unsigned short port) {
     this->socket = new Socket(host, port);
 }
 
-std::string App::newHttpRequest(const char *request) {
+std::string App::newHttpRequest(const char *request, Router& routers) {
     HttpRequest httpRequest(request);
 
     if (httpRequest.path.starts_with("/static/")) {
         return Response::build("<img src='/static/images/image.png' alt='hi'>");
     }
     else {
-        for(const auto& route: routers) {
+        for(const auto& route: routers.routers) {
             if (httpRequest.path == route.path) {
                 return route.view(httpRequest);
             }
@@ -27,9 +27,11 @@ std::string App::newHttpRequest(const char *request) {
 }
 
 void App::run() {
-    staticPath = getPath(staticDir);
-    templatesPath = getPath(templatesDir);
-    socket->listener(newHttpRequest);
+//    staticPath = getPath(staticDir);
+//    templatesPath = getPath(templatesDir);
+    socket->listener([this](const char* request) -> std::string {
+        return App::newHttpRequest(request, this->router);
+    });
 }
 
 std::string App::getProjectDirectory() {
@@ -44,11 +46,4 @@ std::filesystem::path App::getPath(const std::string& directory) {
         std::filesystem::create_directory(templatesPath);
     }
     return templatesPath;
-}
-
-void App::add_route(const std::string& path, std::function<std::string(HttpRequest)> view) {
-    Route route;
-    route.path = path;
-    route.view = std::move(view);
-    routers.push_back(route);
 }

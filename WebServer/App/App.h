@@ -3,6 +3,7 @@
 
 #include "../Socket/Socket.h"
 #include "../HttpRequest/HttpRequest.h"
+#include "../Router/Router.h"
 #include <filesystem>
 #include <map>
 
@@ -12,17 +13,13 @@ public:
     std::string templatesDir = "templates";
     App(const char* host, unsigned short port);
     void run();
-    void add_route(const std::string& path, std::function<std::string(HttpRequest)> view);
+    Router router;
 private:
     Socket *socket;
-    struct Route {
-        std::string path;
-        std::function<std::string(HttpRequest)> view;
-    };
-    static std::vector<Route> routers;
+
     std::filesystem::path templatesPath;
     std::filesystem::path staticPath;
-    static std::string newHttpRequest(const char * request);
+    static std::string newHttpRequest(const char * request, Router & router);
     static std::string getProjectDirectory();
     static std::filesystem::path getPath(const std::string& directory);
 };
